@@ -1,11 +1,11 @@
-# Step 1: Build jar
+# Step 1: Build fat jar using ktor plugin
 FROM gradle:8.7-jdk17 AS builder
 
 WORKDIR /app
 
 COPY . .
 
-RUN ./gradlew shadowJar --no-daemon
+RUN ./gradlew buildFatJar --no-daemon
 
 # Step 2: Run jar
 FROM openjdk:17-slim
@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y curl && \
 
 WORKDIR /app
 
-COPY --from=builder /app/build/libs/*.jar /app/application.jar
+COPY --from=builder /app/build/libs/application.jar /app/application.jar
 
 EXPOSE 8080
 
