@@ -227,12 +227,6 @@ components:
           type: "string"
         category:
           $ref: "#/components/schemas/ExerciseCategory"
-        image:
-          type: "string"
-          nullable: true
-        video:
-          type: "string"
-          nullable: true
 
     MediaDto:
       type: "object"
