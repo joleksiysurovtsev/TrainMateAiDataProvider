@@ -28,6 +28,13 @@ fun Application.configureExerciseRoutes(exerciseService: ExerciseService, mediaS
                     call.respond(HttpStatusCode.Created, mapOf("id" to id))
                 }
 
+                // Bulk upload exercises
+                post("/bulk") {
+                    val exercises = call.receive<List<ExerciseDto>>()
+                    val ids = exercises.map { exerciseService.create(it) }
+                    call.respond(HttpStatusCode.Created, mapOf("ids" to ids))
+                }
+
                 // Get exercise by ID
                 get("/{id}") {
                     val id = call.parameters["id"] ?: throw IllegalArgumentException("Invalid ID")

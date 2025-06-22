@@ -55,6 +55,31 @@ paths:
                   id:
                     type: "string"
 
+  /api/exercises/bulk:
+    post:
+      summary: "Bulk upload exercises"
+      description: "Creates multiple exercises in a single request"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: "array"
+              items:
+                $ref: "#/components/schemas/ExerciseDto"
+      responses:
+        "201":
+          description: "Exercises created"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  ids:
+                    type: "array"
+                    items:
+                      type: "string"
+
   /api/exercises/{id}:
     parameters:
       - name: "id"
