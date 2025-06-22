@@ -12,8 +12,8 @@ RUN apt-get update && apt-get install -y curl && \
 
 WORKDIR /app
 
-# Copy the pre-built JAR file (should be provided externally)
-COPY application.jar /app/application.jar
+# Copy the pre-built JAR file from the build directory
+COPY build/libs/*.jar /app/application.jar
 
 # Environment variables for database connection
 ENV POSTGRES_SERVER=localhost
