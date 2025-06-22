@@ -32,19 +32,15 @@ fun runFlywayMigration(connection: Connection) {
 }
 
 fun Application.connectToPostgres(): Connection {
-    val rawUrl = System.getenv("DATABASE_URL")
-        ?: error("DATABASE_URL is not set")
+    val host = System.getenv("PGHOST") ?: "localhost"
+    val port = System.getenv("PGPORT") ?: "5432"
+    val db = System.getenv("PGDATABASE") ?: "railway"
+    val user = System.getenv("PGUSER") ?: "postgres"
+    val password = System.getenv("PGPASSWORD") ?: "password"
 
-    val uri = URI(rawUrl.replace("postgres://", "postgresql://"))
+    val url = "jdbc:postgresql://$host:$port/$db"
 
-    val userInfo = uri.userInfo?.split(":")
-        ?: error("Missing user credentials in DATABASE_URL")
-
-    val user = userInfo[0]
-    val password = userInfo.getOrNull(1) ?: ""
-    val url = "jdbc:postgresql://${uri.host}:${uri.port}${uri.path}"
-
-    log.info("Connecting to Postgres: $url (user=$user)")
+    log.info("Connecting to DB: $url as user=$user")
 
     Class.forName("org.postgresql.Driver")
     return DriverManager.getConnection(url, user, password)
