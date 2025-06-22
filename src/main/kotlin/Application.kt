@@ -1,5 +1,6 @@
 package dev.surovtsev
 
+import dev.surovtsev.api.configureCORS
 import dev.surovtsev.api.configureHTTP
 import dev.surovtsev.api.configureRouting
 import dev.surovtsev.db.configureDatabases
@@ -10,6 +11,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    configureCORS()
     configureHTTP()
     configureSerialization()
     configureDatabases()

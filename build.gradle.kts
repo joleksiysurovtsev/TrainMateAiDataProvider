@@ -12,11 +12,8 @@ plugins {
 group = "dev.surovtsev"
 version = "0.0.1"
 
-//application {
-//    mainClass = "io.ktor.server.netty.EngineMain"
-//}
 application {
-    mainClass.set("dev.surovtsev.ApplicationKt") // или другой путь, если main в другом файле
+    mainClass.set("dev.surovtsev.ApplicationKt")
 }
 
 ktor {
@@ -35,6 +32,7 @@ dependencies {
     implementation("io.ktor:ktor-server-swagger")
     implementation("io.ktor:ktor-server-content-negotiation")
     implementation("io.ktor:ktor-serialization-kotlinx-json")
+    implementation("io.ktor:ktor-server-cors:2.3.10")
     implementation("org.postgresql:postgresql:$postgres_version")
     implementation("com.h2database:h2:$h2_version")
     implementation("io.ktor:ktor-server-netty")

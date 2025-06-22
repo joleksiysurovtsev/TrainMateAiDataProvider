@@ -4,7 +4,6 @@ import dev.surovtsev.api.configureExerciseRoutes
 import dev.surovtsev.service.ExerciseService
 import dev.surovtsev.service.MediaService
 import io.ktor.server.application.*
-import io.ktor.server.util.url
 import org.flywaydb.core.Flyway
 import java.net.URI
 import java.sql.Connection
