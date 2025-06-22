@@ -1,0 +1,15 @@
+CREATE TABLE IF NOT EXISTS exercises (
+    id VARCHAR(255) PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    category VARCHAR(50) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS media (
+    id VARCHAR(255) PRIMARY KEY,
+    exercise_id VARCHAR(255) NOT NULL,
+    kind VARCHAR(20) NOT NULL,
+    url VARCHAR(255) NOT NULL,
+    "order" INT NOT NULL DEFAULT 0,
+    FOREIGN KEY (exercise_id) REFERENCES exercises(id) ON DELETE CASCADE
+);

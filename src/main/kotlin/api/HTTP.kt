@@ -18,8 +18,6 @@ fun Application.configureHTTP() {
     }
 }
 
-
-
 fun Application.configureCORS() {
     install(CORS) {
         anyHost()
