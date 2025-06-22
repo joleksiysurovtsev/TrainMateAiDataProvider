@@ -1,0 +1,255 @@
+openapi: "3.0.3"
+info:
+  title: "TrainmateAI Data Provider API"
+  description: "API for managing exercises and media for TrainmateAI"
+  version: "1.0.0"
+servers:
+  - url: "http://0.0.0.0:8080"
+    description: "Development server"
+
+paths:
+  /:
+    get:
+      description: "Hello World!"
+      responses:
+        "200":
+          description: "OK"
+          content:
+            text/plain:
+              schema:
+                type: "string"
+              examples:
+                Example#1:
+                  value: "Hello World!"
+
+  /api/exercises:
+    get:
+      summary: "Get all exercises"
+      description: "Returns a list of all exercises"
+      responses:
+        "200":
+          description: "List of exercises"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/ExerciseDto"
+    post:
+      summary: "Create a new exercise"
+      description: "Creates a new exercise"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExerciseDto"
+      responses:
+        "201":
+          description: "Exercise created"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  id:
+                    type: "string"
+
+  /api/exercises/{id}:
+    parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+    get:
+      summary: "Get exercise by ID"
+      description: "Returns an exercise by ID"
+      responses:
+        "200":
+          description: "Exercise found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExerciseDto"
+        "404":
+          description: "Exercise not found"
+    put:
+      summary: "Update exercise"
+      description: "Updates an exercise"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExerciseDto"
+      responses:
+        "200":
+          description: "Exercise updated"
+        "404":
+          description: "Exercise not found"
+    delete:
+      summary: "Delete exercise"
+      description: "Deletes an exercise"
+      responses:
+        "200":
+          description: "Exercise deleted"
+        "404":
+          description: "Exercise not found"
+
+  /api/exercises/{id}/media:
+    parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+    get:
+      summary: "Get all media for an exercise"
+      description: "Returns a list of all media for an exercise"
+      responses:
+        "200":
+          description: "List of media"
+          content:
+            application/json:
+              schema:
+                type: "array"
+                items:
+                  $ref: "#/components/schemas/MediaDto"
+        "404":
+          description: "Exercise not found"
+
+  /api/media:
+    post:
+      summary: "Create a new media"
+      description: "Creates a new media"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MediaDto"
+      responses:
+        "201":
+          description: "Media created"
+          content:
+            application/json:
+              schema:
+                type: "object"
+                properties:
+                  id:
+                    type: "string"
+
+  /api/media/{id}:
+    parameters:
+      - name: "id"
+        in: "path"
+        required: true
+        schema:
+          type: "string"
+    get:
+      summary: "Get media by ID"
+      description: "Returns a media by ID"
+      responses:
+        "200":
+          description: "Media found"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MediaDto"
+        "404":
+          description: "Media not found"
+    put:
+      summary: "Update media"
+      description: "Updates a media"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MediaDto"
+      responses:
+        "200":
+          description: "Media updated"
+        "404":
+          description: "Media not found"
+    delete:
+      summary: "Delete media"
+      description: "Deletes a media"
+      responses:
+        "200":
+          description: "Media deleted"
+        "404":
+          description: "Media not found"
+
+components:
+  schemas:
+    ExerciseCategory:
+      type: "string"
+      enum:
+        - "Chest"
+        - "Back"
+        - "Arms"
+        - "Legs"
+        - "Core"
+        - "Cardio"
+        - "All"
+        - "Shoulders"
+        - "Biceps"
+        - "Triceps"
+        - "Forearms"
+        - "Quads"
+        - "Hamstrings"
+        - "Calves"
+        - "Glutes"
+
+    MediaKind:
+      type: "string"
+      enum:
+        - "IMAGE"
+        - "VIDEO"
+        - "GIF"
+        - "SITE"
+
+    ExerciseDto:
+      type: "object"
+      required:
+        - "id"
+        - "name"
+        - "description"
+        - "category"
+      properties:
+        id:
+          type: "string"
+        name:
+          type: "string"
+        description:
+          type: "string"
+        category:
+          $ref: "#/components/schemas/ExerciseCategory"
+        image:
+          type: "string"
+          nullable: true
+        video:
+          type: "string"
+          nullable: true
+
+    MediaDto:
+      type: "object"
+      required:
+        - "id"
+        - "exerciseId"
+        - "kind"
+        - "url"
+      properties:
+        id:
+          type: "string"
+        exerciseId:
+          type: "string"
+        kind:
+          $ref: "#/components/schemas/MediaKind"
+        url:
+          type: "string"
+        order:
+          type: "integer"
+          default: 0
