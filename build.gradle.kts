@@ -13,10 +13,12 @@ plugins {
 group = "dev.surovtsev"
 version = "0.0.1"
 
+//application {
+//    mainClass = "io.ktor.server.netty.EngineMain"
+//}
 application {
-    mainClass = "io.ktor.server.netty.EngineMain"
+    mainClass.set("dev.surovtsev.ApplicationKt") // или другой путь, если main в другом файле
 }
-
 
 repositories {
     mavenCentral()
