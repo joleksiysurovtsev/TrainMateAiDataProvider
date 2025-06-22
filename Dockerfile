@@ -1,9 +1,3 @@
-FROM gradle:8.5-jdk17 AS build
-
-WORKDIR /app
-COPY . /app/
-RUN gradle build --no-daemon
-
 FROM openjdk:17-slim
 
 # Add labels for better documentation
@@ -16,11 +10,10 @@ RUN apt-get update && apt-get install -y curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Create a non-root user
-RUN groupadd -r appuser && useradd -r -g appuser appuser
-
 WORKDIR /app
-COPY --from=build /app/build/libs/*.jar /app/application.jar
+
+# Copy the pre-built JAR file (should be provided externally)
+COPY application.jar /app/application.jar
 
 # Environment variables for database connection
 ENV POSTGRES_SERVER=localhost
@@ -28,12 +21,6 @@ ENV POSTGRES_PORT=5432
 ENV POSTGRES_DB_NAME=train_mate_ai_data
 ENV POSTGRES_USERNAME=postgres
 ENV POSTGRES_PASSWORD=postgres
-
-# Create directory for persistent data with proper permissions
-RUN mkdir -p /app/data && chown -R appuser:appuser /app
-
-# Switch to non-root user
-USER appuser
 
 # Expose the port the app runs on
 EXPOSE 8080
