@@ -1,43 +1,35 @@
 package dev.surovtsev.db
 
 import dev.surovtsev.api.configureExerciseRoutes
-import io.ktor.server.application.*
 import dev.surovtsev.service.ExerciseService
 import dev.surovtsev.service.MediaService
-import java.sql.Connection
-import java.sql.DriverManager
+import io.ktor.server.application.*
 import org.flywaydb.core.Flyway
 import java.net.URI
+import java.sql.Connection
+import java.sql.DriverManager
 
 fun Application.configureDatabases() {
-    val dbConnection: Connection = connectToPostgres()
+    val dbConnection = connectToPostgres()
 
-    // Run Flyway migrations
-    runFlywayMigration(
-        environment.config.property("postgres.url").getString(),
-        environment.config.property("postgres.user").getString(),
-        environment.config.property("postgres.password").getString()
-    )
+    runFlywayMigration(dbConnection)
 
-    // Initialize services
     val exerciseService = ExerciseService(dbConnection)
     val mediaService = MediaService(dbConnection)
 
-    // Configure routes
     configureExerciseRoutes(exerciseService, mediaService)
 }
 
-/**
- * Runs Flyway database migrations.
- */
-fun runFlywayMigration(url: String, user: String, password: String) {
-    val flyway = Flyway.configure()
-        .dataSource(url, user, password)
+fun runFlywayMigration(connection: Connection) {
+    val meta = connection.metaData
+    val url = meta.url
+    val user = meta.userName
+
+    Flyway.configure()
+        .dataSource(url, user, null)
         .load()
-
-    flyway.migrate()
+        .migrate()
 }
-
 
 fun Application.connectToPostgres(): Connection {
     val rawUrl = System.getenv("DATABASE_URL")
@@ -52,7 +44,8 @@ fun Application.connectToPostgres(): Connection {
     val password = userInfo.getOrNull(1) ?: ""
     val url = "jdbc:postgresql://${uri.host}:${uri.port}${uri.path}"
 
-    log.info("Connecting to DB with jdbc URL: $url")
+    log.info("Connecting to Postgres: $url (user=$user)")
 
+    Class.forName("org.postgresql.Driver")
     return DriverManager.getConnection(url, user, password)
 }
