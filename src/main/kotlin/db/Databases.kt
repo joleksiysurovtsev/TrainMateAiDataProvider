@@ -11,32 +11,27 @@ import java.sql.Connection
 import java.sql.DriverManager
 
 fun Application.configureDatabases() {
-    val dbConnection = connectToPostgres()
+    val (connection, user, password) = connectToPostgresWithCreds()
 
-    runFlywayMigration(dbConnection)
+    runFlywayMigration(connection.metaData.url, user, password)
 
-    val exerciseService = ExerciseService(dbConnection)
-    val mediaService = MediaService(dbConnection)
+    val exerciseService = ExerciseService(connection)
+    val mediaService = MediaService(connection)
 
     configureExerciseRoutes(exerciseService, mediaService)
 }
 
-fun runFlywayMigration(connection: Connection) {
-    val meta = connection.metaData
-    val url = meta.url
-    val user = meta.userName
-
+fun runFlywayMigration(url: String, user: String, password: String) {
     Flyway.configure()
-        .dataSource(url, user, null)
+        .dataSource(url, user, password)
         .load()
         .migrate()
 }
 
-fun Application.connectToPostgres(): Connection {
+fun Application.connectToPostgresWithCreds(): Triple<Connection, String, String> {
     val databaseUrl = System.getenv("DATABASE_URL")
 
     val (url, user, password) = if (databaseUrl != null && !databaseUrl.startsWith("jdbc:")) {
-        // Преобразуем PostgreSQL URI → JDBC URL
         val uri = URI(databaseUrl.replace("postgres://", "postgresql://"))
         val userInfo = uri.userInfo?.split(":")
             ?: error("DATABASE_URL must contain user credentials")
@@ -46,7 +41,6 @@ fun Application.connectToPostgres(): Connection {
         val url = "jdbc:postgresql://${uri.host}:${uri.port}${uri.path}"
         Triple(url, user, password)
     } else {
-        // Используем переменные среды напрямую
         val host = System.getenv("PGHOST") ?: "localhost"
         val port = System.getenv("PGPORT") ?: "5432"
         val db = System.getenv("PGDATABASE") ?: "railway"
@@ -58,5 +52,6 @@ fun Application.connectToPostgres(): Connection {
 
     log.info("🔌 Connecting to DB at $url as user '$user'")
     Class.forName("org.postgresql.Driver")
-    return DriverManager.getConnection(url, user, password)
+    val connection = DriverManager.getConnection(url, user, password)
+    return Triple(connection, user, password)
 }
