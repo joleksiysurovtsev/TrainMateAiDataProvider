@@ -42,9 +42,9 @@ fun Application.connectToPostgresWithCreds(): Triple<Connection, String, String>
     } else {
         val host = System.getenv("PGHOST") ?: "localhost"
         val port = System.getenv("PGPORT") ?: "5432"
-        val db = System.getenv("PGDATABASE") ?: "railway"
+        val db = System.getenv("PGDATABASE") ?: "trainmate_ai_data"
         val user = System.getenv("POSTGRES_USER") ?: "postgres"
-        val password = System.getenv("POSTGRES_PASSWORD") ?: "password"
+        val password = System.getenv("POSTGRES_PASSWORD") ?: "postgres"
         val url = databaseUrl ?: "jdbc:postgresql://$host:$port/$db"
         Triple(url, user, password)
     }
