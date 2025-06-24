@@ -14,29 +14,29 @@ class ExerciseService(private val connection: Connection) {
                 name VARCHAR(255) NOT NULL,
                 description TEXT NOT NULL,
                 category VARCHAR(50) NOT NULL,
-                imageUrl VARCHAR(255) NOT NULL
+                imageurl VARCHAR(255) NOT NULL
             );
         """
 
         private const val SELECT_EXERCISE_BY_ID = """
-            SELECT id, name, description, category, imageUrl
+            SELECT id, name, description, category, imageurl
             FROM exercises 
             WHERE id = ?
         """
 
         private const val SELECT_ALL_EXERCISES = """
-            SELECT id, name, description, category, imageUrl
+            SELECT id, name, description, category, imageurl
             FROM exercises
         """
 
         private const val INSERT_EXERCISE = """
-            INSERT INTO exercises (id, name, description, category, imageUrl) 
+            INSERT INTO exercises (id, name, description, category, imageurl) 
             VALUES (?, ?, ?, ?, ?)
         """
 
         private const val UPDATE_EXERCISE = """
             UPDATE exercises 
-            SET name = ?, description = ?, category = ?, imageUrl = ?
+            SET name = ?, description = ?, category = ?, imageurl = ?
             WHERE id = ?
         """
 
@@ -55,7 +55,7 @@ class ExerciseService(private val connection: Connection) {
         statement.setString(2, exercise.name)
         statement.setString(3, exercise.description)
         statement.setString(4, exercise.category.name)
-        statement.setString(5, exercise.imageUrl)
+        statement.setString(5, exercise.imageurl)
         statement.executeUpdate()
         return@withContext exercise.id
     }
@@ -71,8 +71,8 @@ class ExerciseService(private val connection: Connection) {
             val description = resultSet.getString("description")
             val categoryName = resultSet.getString("category")
             val category = ExerciseCategory.valueOf(categoryName)
-            val imageUrl = resultSet.getString("imageUrl")
-            return@withContext ExerciseDto(id, name, description, category, imageUrl)
+            val imageurl = resultSet.getString("imageurl")
+            return@withContext ExerciseDto(id, name, description, category, imageurl)
         } else {
             throw Exception("Exercise not found")
         }
@@ -90,8 +90,8 @@ class ExerciseService(private val connection: Connection) {
             val description = resultSet.getString("description")
             val categoryName = resultSet.getString("category")
             val category = ExerciseCategory.valueOf(categoryName)
-            val imageUrl = resultSet.getString("imageUrl")
-            exercises.add(ExerciseDto(id, name, description, category, imageUrl))
+            val imageurl = resultSet.getString("imageurl")
+            exercises.add(ExerciseDto(id, name, description, category, imageurl))
         }
         return@withContext exercises
     }
@@ -102,7 +102,7 @@ class ExerciseService(private val connection: Connection) {
         statement.setString(1, exercise.name)
         statement.setString(2, exercise.description)
         statement.setString(3, exercise.category.name)
-        statement.setString(4, exercise.imageUrl)
+        statement.setString(4, exercise.imageurl)
         statement.setString(6, id)
         statement.executeUpdate()
     }

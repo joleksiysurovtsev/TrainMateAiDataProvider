@@ -243,6 +243,7 @@ components:
         - "name"
         - "description"
         - "category"
+        - "imageurl"
       properties:
         id:
           type: "string"

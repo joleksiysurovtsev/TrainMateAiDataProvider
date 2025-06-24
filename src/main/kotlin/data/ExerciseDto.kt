@@ -9,5 +9,5 @@ data class ExerciseDto(
     val name: String,
     val description: String,
     val category: ExerciseCategory,
-    val imageUrl: String? = null
+    val imageurl: String? = null
 )

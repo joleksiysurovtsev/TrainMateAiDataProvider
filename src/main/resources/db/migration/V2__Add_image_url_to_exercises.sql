@@ -1,2 +1,2 @@
 ALTER TABLE exercises
-    ADD COLUMN image_url VARCHAR;
+    ADD COLUMN imageurl VARCHAR;
